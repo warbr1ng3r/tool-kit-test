@@ -4,16 +4,24 @@ import { FC } from 'react';
 type Props = {
   totalPages: number;
   currentPage: number;
-  onPageChange: (page: number) => void;
+  onPageNext: () => void;
+  onPagePrevious: () => void;
+  disabled?: boolean;
   maxPageNumbersToShow: number;
 };
 
 export const Paginator: FC<Props> = ({
   totalPages,
   currentPage,
-  onPageChange,
-  maxPageNumbersToShow
+  onPageNext,
+  onPagePrevious,
+  maxPageNumbersToShow,
+  disabled
 }) => {
+  if (totalPages === 0) {
+    return <></>;
+  }
+
   const renderPageNumbers = () => {
     const pageNumbers = [];
     const halfWindow = Math.floor(maxPageNumbersToShow / 2);
@@ -41,7 +49,6 @@ export const Paginator: FC<Props> = ({
       pageNumbers.push(
         <button
           key={i}
-          onClick={() => onPageChange(i)}
           className={i === currentPage ? styles.activeButton : styles.button}
         >
           {i}
@@ -63,17 +70,17 @@ export const Paginator: FC<Props> = ({
   return (
     <div className={styles.paginator}>
       <button
-        className={styles.button}
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
+        className={styles.interactiveButton}
+        onClick={onPagePrevious}
+        disabled={currentPage === 1 || disabled}
       >
         Предыдущая
       </button>
       {renderPageNumbers()}
       <button
-        className={styles.button}
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
+        className={styles.interactiveButton}
+        onClick={onPageNext}
+        disabled={currentPage === totalPages || disabled}
       >
         Следующая
       </button>
